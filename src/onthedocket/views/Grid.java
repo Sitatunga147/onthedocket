@@ -32,7 +32,7 @@ public class Grid extends Container {
         repaint();
     }
 	
-	private void clearRow(int row) {
+	public void clearRow(int row) {
 		if(row < 0 || row >= rows) {
 			throw new IndexOutOfBoundsException("Row " + row);
 		}
@@ -61,7 +61,7 @@ public class Grid extends Container {
     }
 
 	
-	private void clear() {
+	public void clear() {
 		removeAll();
 		
 		for(int i = 0; i < rows*cols; i++) {

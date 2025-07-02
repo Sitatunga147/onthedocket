@@ -2,6 +2,7 @@ package onthedocket.views;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.*;
 
 @SuppressWarnings("serial")
 public class MainView extends JFrame {
@@ -51,7 +52,22 @@ public class MainView extends JFrame {
 	}
 	
 	private JPanel buildCalendarTab() {
-		JPanel calendarPanel = new JPanel();
+		CalendarComponent calendar = new CalendarComponent(LocalDate.now(), 15);
+		JButton leftButton = new JButton("◄");
+		leftButton.setFont(leftButton.getFont().deriveFont(20.0f));
+		leftButton.addActionListener(e -> {
+			calendar.resetWith(calendar.getDateArray().get(0).minusWeeks(1));
+		});
+		JButton rightButton = new JButton("►");
+		rightButton.setFont(rightButton.getFont().deriveFont(20.0f));
+		rightButton.addActionListener(e -> {
+			calendar.resetWith(calendar.getDateArray().get(0).plusWeeks(1));
+		});
+		
+		JPanel calendarPanel = new JPanel(new BorderLayout());
+		calendarPanel.add(calendar, BorderLayout.CENTER);
+		calendarPanel.add(leftButton, BorderLayout.WEST);
+		calendarPanel.add(rightButton, BorderLayout.EAST);
 		
 		return calendarPanel;
 	}

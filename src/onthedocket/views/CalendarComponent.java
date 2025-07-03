@@ -42,7 +42,11 @@ public class CalendarComponent extends Grid {
 			String calendarDate = date.format(monthDayFormatter);
 			
 			JPanel cell = new JPanel(new GridBagLayout());
-			cell.setBackground(Color.BLACK);
+			if(date.equals(LocalDate.now())) {
+				cell.setBackground(Color.DARK_GRAY);
+			} else {
+				cell.setBackground(Color.BLACK);
+			}
 			
 			JLabel dayOfWeekLabel = new JLabel(dayOfWeek, SwingConstants.CENTER);
 			dayOfWeekLabel.setForeground(Color.WHITE);

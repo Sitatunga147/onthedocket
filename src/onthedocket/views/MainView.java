@@ -64,10 +64,15 @@ public class MainView extends JFrame {
 			calendar.resetWith(calendar.getDateArray().get(0).plusWeeks(1));
 		});
 		
+		JButton eventButton = new JButton("Add Event");
+		eventButton.setFont(eventButton.getFont().deriveFont(20.0f));
+		eventButton.addActionListener(e -> new AddEventDialog(this));
+		
 		JPanel calendarPanel = new JPanel(new BorderLayout());
 		calendarPanel.add(calendar, BorderLayout.CENTER);
 		calendarPanel.add(leftButton, BorderLayout.WEST);
 		calendarPanel.add(rightButton, BorderLayout.EAST);
+		calendarPanel.add(eventButton, BorderLayout.SOUTH);
 		
 		return calendarPanel;
 	}

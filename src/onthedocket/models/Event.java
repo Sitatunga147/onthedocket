@@ -7,8 +7,13 @@ public class Event {
 	private String name;
 	private LocalDateTime start;
 	private LocalDateTime end;
+	private EventCategory category;
 
 	public Event(String name, LocalDateTime start, LocalDateTime end) {
+		this(name, start, end, EventCategory.DEFAULT);
+	}
+	
+	public Event(String name, LocalDateTime start, LocalDateTime end, EventCategory category) {
 		setName(name);
 		setStart(start);
 		setEnd(end);
@@ -24,6 +29,14 @@ public class Event {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public EventCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(EventCategory category) {
+		this.category = category;
 	}
 
 	public LocalDateTime getStart() {

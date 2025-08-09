@@ -1,6 +1,7 @@
 package onthedocket.persistence;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import onthedocket.models.Event;
 import onthedocket.models.EventCategory;
@@ -14,10 +15,16 @@ public final class DataManager {
 	}
 	
 	public static void addEvent(Event e) {
+		if(Objects.isNull(events)) {
+			events = new ArrayList<Event>();
+		}
 		events.add(e);
 	}
 	
 	public static void addCategory(EventCategory c) {
+		if(Objects.isNull(categories)) {
+			categories = new ArrayList<EventCategory>();
+		}
 		categories.add(c);
 	}
 	

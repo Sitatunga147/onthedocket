@@ -5,10 +5,12 @@ import java.util.Objects;
 
 import onthedocket.models.Event;
 import onthedocket.models.EventCategory;
+import onthedocket.utils.Theme;
 
 public final class DataManager {
 	private static ArrayList<Event> events;
 	private static ArrayList<EventCategory> categories;
+	private static Theme theme;
 
 	private DataManager() {
 		throw new AssertionError();
@@ -42,5 +44,13 @@ public final class DataManager {
 
 	public static ArrayList<EventCategory> getCategories() {
 		return categories;
+	}
+	
+	public static Theme getTheme() {
+		return theme;
+	}
+	
+	public static void setTheme(Theme theme) {
+		DataManager.theme = theme;
 	}
 }

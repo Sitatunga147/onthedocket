@@ -28,10 +28,10 @@ public class MainView extends JFrame {
 	}
 
 	private void initComponents() {
-		getContentPane().setBackground(theme.getBackgroundColor());
+		getContentPane().setForeground(theme.getBackgroundColor());
 		setLayout(new BorderLayout());
 		
-		add(new CalendarComponent(LocalDate.now(), Theme.LIGHT));
+		add(new CalendarComponent(LocalDate.now(), theme));
 	}
 
 	public Theme getTheme() {

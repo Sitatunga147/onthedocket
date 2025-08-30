@@ -1,6 +1,7 @@
 package onthedocket.views;
 
 import java.awt.BorderLayout;
+import java.time.LocalDate;
 
 import javax.swing.JFrame;
 
@@ -29,6 +30,8 @@ public class MainView extends JFrame {
 	private void initComponents() {
 		getContentPane().setBackground(theme.getBackgroundColor());
 		setLayout(new BorderLayout());
+		
+		add(new CalendarComponent(LocalDate.now(), Theme.LIGHT));
 	}
 
 	public Theme getTheme() {

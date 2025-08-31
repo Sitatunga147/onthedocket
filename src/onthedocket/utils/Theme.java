@@ -5,6 +5,7 @@ import java.awt.Color;
 public class Theme {
 	public static final Theme LIGHT = Theme.light();
 	public static final Theme DARK = Theme.dark();
+	public static final Theme SUNRISE = Theme.sunrise();
 	
 	private Color backgroundColor;
 	private Color secondaryColor;
@@ -31,6 +32,16 @@ public class Theme {
 		theme.setAccentColor(Color.BLUE);
 		theme.setTextColor(Color.WHITE);
 		theme.setTextColor2(Color.LIGHT_GRAY);
+		return theme;
+	}
+	
+	private static Theme sunrise() {
+		Theme theme = new Theme();
+		theme.setBackgroundColor(new Color(0xff8153));
+		theme.setSecondaryColor(new Color(0xfcc5af));
+		theme.setAccentColor(new Color(0xffe63b));
+		theme.setTextColor(new Color(0x000100));
+		theme.setTextColor2(new Color(0x684a2e));
 		return theme;
 	}
 

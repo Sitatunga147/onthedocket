@@ -111,7 +111,7 @@ public class CalendarComponent extends JComponent {
 		rightButton.addActionListener(e -> {
 			updateWith(sampleDate.plusMonths(1));
 		});
-		JLabel monthLabel = new JLabel(sampleDate.getMonth().toString());
+		JLabel monthLabel = new JLabel(sampleDate.getMonth().toString() + " " + sampleDate.getYear());
 		monthLabel.setForeground(theme.getTextColor());
 		
 		bottomPanel.add(leftButton);

@@ -20,6 +20,14 @@ import javax.swing.ListSelectionModel;
 import onthedocket.models.Event;
 import onthedocket.persistence.DataManager;
 
+/**
+ * A modal dialog that displays all events for a specific date and allows
+ * the user to select and remove one or more events. Presents the events
+ * in a scrollable list, enforces selection, and confirms before deletion.
+ * Upon successful removal, a flag is set to indicate the change.
+ * 
+ * @author Sitatunga147 (with moderate AI assistance)
+ */
 @SuppressWarnings("serial")
 public class RemoveEventDialog extends JDialog {
 	private final LocalDate date;
@@ -27,11 +35,12 @@ public class RemoveEventDialog extends JDialog {
 	private boolean removed = false;
 
 	/**
-     * Constructs a modal dialog owned by the given frame, initializes UI components,
-     * and positions the dialog relative to its owner.
-     *
-     * @param owner the parent frame to which this dialog is modal
-     */
+	 * Constructs a modal RemoveEventDialog tied to the given frame, listing
+	 * all events on the specified date and positioning the dialog relative to its owner.
+	 *
+	 * @param owner the parent frame for modality and positioning
+	 * @param date  the calendar date whose events will be shown
+	 */
 	public RemoveEventDialog(JFrame owner, LocalDate date) {
 		super(owner, "Remove Events: " + date, true);
 		this.date = date;
@@ -46,10 +55,19 @@ public class RemoveEventDialog extends JDialog {
 		setLocationRelativeTo(owner);
 	}
 	
+	/**
+	 * Returns true if the user removed one or more events in this dialog.
+	 *
+	 * @return {@code true} if events were removed; {@code false} otherwise
+	 */
 	public boolean wasRemoved() {
         return removed;
     }
 	
+	/**
+	 * Initializes and lays out all UI components, including the event list,
+	 * removal and cancel buttons, and configures their action listeners.
+	 */
 	private void initComponents() {
 		JPanel content = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -82,6 +100,10 @@ public class RemoveEventDialog extends JDialog {
         getContentPane().add(buttons, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * Handles the removal workflow: validates selection, prompts for confirmation,
+	 * and upon approval removes the selected events from the data store.
+	 */
 	private void onRemove() {
         List<Event> selected = eventJList.getSelectedValuesList();
         if (selected.isEmpty()) {

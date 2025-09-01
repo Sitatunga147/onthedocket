@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -14,37 +16,72 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import onthedocket.models.Event;
+import onthedocket.persistence.DataManager;
 import onthedocket.utils.Theme;
 
+/**
+ * Renders a monthly calendar view that displays day cells, headers, and navigation controls.
+ * Fetches events from DataManager and displays them on their respective dates,
+ * using time labels and color‐coded categories. Supports theme changes and month navigation.
+ *
+ * @see onthedocket.persistence.DataManager
+ * @see onthedocket.models.Event
+ * @see onthedocket.utils.Theme
+ * 
+ * @author Sitatunga147 (with moderate AI assistance)
+ */
 @SuppressWarnings("serial")
 public class CalendarComponent extends JComponent {
-	private LocalDate sampleDate;
+	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
+	private LocalDate referenceDate;
 	private JPanel headerPanel;
 	private JPanel calendarPanel;
 	private JPanel bottomPanel;
 	private Theme theme;
+	private ArrayList<Event> events;
 	
+	/**
+     * Creates a CalendarComponent for the current date using the default LIGHT theme.
+     */
 	public CalendarComponent() {
 		this(LocalDate.now(), Theme.LIGHT);
 	}
 	
-	public CalendarComponent(LocalDate dateOnCalendar) {
-		this(dateOnCalendar, Theme.LIGHT);
+	/**
+     * Creates a CalendarComponent for the specified date using the default LIGHT theme.
+     *
+     * @param date the month reference date to display
+     */
+	public CalendarComponent(LocalDate date) {
+		this(date, Theme.LIGHT);
 	}
 
-	public CalendarComponent(LocalDate dateOnCalendar, Theme theme) {
-		this.sampleDate = dateOnCalendar;
-		setTheme(theme);
+	/**
+     * Creates a CalendarComponent for the specified date and theme.
+     *
+     * @param date the month reference date to display
+     * @param theme the visual theme to apply
+     */
+	public CalendarComponent(LocalDate date, Theme theme) {
+		this.referenceDate = date;
+		
 		
 		setLayout(new BorderLayout());
-		initHeader();
-		initCalendar();
-		initBottom();
+		setTheme(theme);
 	}
 	
-	private void updateWith(LocalDate dateOnCalendar) {
-		this.sampleDate = dateOnCalendar;
+	/**
+     * Updates the calendar to display the month containing the new reference date,
+     * rebuilds header, day cells, and bottom navigation, then repaints the component.
+     *
+     * @param newReferenceDate the date to center the calendar view on
+     */
+	public void updateWith(LocalDate newReferenceDate) {
+		this.referenceDate = newReferenceDate;
 		removeAll();
+		
+		events = DataManager.getEvents();
 		
 		initHeader();
 		initCalendar();
@@ -54,6 +91,23 @@ public class CalendarComponent extends JComponent {
 		repaint();
 	}
 	
+	/**
+     * Constructs a single day cell panel with vertical layout, background color,
+     * and border styling from the current theme.
+     *
+     * @return a configured JPanel representing one calendar day cell
+     */
+	private JPanel buildDayCell() {
+		JPanel cell = new JPanel();
+		cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));
+		cell.setBackground(theme.getBackgroundColor());
+		cell.setBorder(BorderFactory.createLineBorder(theme.getSecondaryColor()));
+		return cell;
+	}
+	
+	/**
+     * Initializes and lays out the header row showing the names of the days of the week.
+     */
 	private void initHeader() {
 		headerPanel = new JPanel(new GridLayout(1, 7));
 		for(int i = 1; i <= 7; i++) {
@@ -65,54 +119,78 @@ public class CalendarComponent extends JComponent {
 			headerCell.setBorder(BorderFactory.createEtchedBorder());
 			JLabel headerLabel = new JLabel(day.toString());
 			headerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			headerLabel.setForeground(theme.getTextColor());
+			headerLabel.setForeground(theme.getPrimaryTextColor());
 			headerCell.add(headerLabel);
 			headerPanel.add(headerCell);
 		}
 		add(headerPanel, BorderLayout.NORTH);
 	}
 	
+	/**
+     * Initializes and lays out the main calendar grid for the current reference month,
+     * including placeholder cells and daily event entries.
+     */
 	private void initCalendar() {
 		calendarPanel = new JPanel(new GridLayout(0, 7));
 		calendarPanel.setBackground(theme.getBackgroundColor());
-		int placeholders = sampleDate.withDayOfMonth(1).getDayOfWeek().getValue() % 7;
+		int placeholders = referenceDate.withDayOfMonth(1).getDayOfWeek().getValue() % 7;
 		for(int i = 1; i <= placeholders; i++) {
 			JPanel cell = new JPanel();
 			cell.setBackground(theme.getBackgroundColor());
 			calendarPanel.add(cell);
 		}
 		
-		for(int i = 1; i <= sampleDate.lengthOfMonth(); i++) {
-			JPanel cell = new JPanel();
-			cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));
-			cell.setBackground(theme.getBackgroundColor());
-			cell.setBorder(BorderFactory.createLineBorder(theme.getSecondaryColor()));
+		for(int i = 1; i <= referenceDate.lengthOfMonth(); i++) {
+			LocalDate date = referenceDate.withDayOfMonth(i);
+			ArrayList<Event> todayEvents = new ArrayList<Event>();
+			for(Event e : events) {
+				if(e.getStart().toLocalDate().equals(date) && e.getEnd().toLocalDate().equals(date)) {
+					todayEvents.add(e);
+				}
+			}
+			JPanel cell = buildDayCell();
 			JLabel day = new JLabel(String.valueOf(i));
-			day.setForeground(theme.getTextColor2());
+			day.setForeground(theme.getSecondaryTextColor());
 			cell.add(day);
+			
+			for(Event e : todayEvents) {
+				JPanel eventPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+				eventPanel.setBackground(theme.getBackgroundColor());
+				JLabel timeLabel = new JLabel(e.getStart().format(TIME_FORMATTER) + " - " + e.getEnd().format(TIME_FORMATTER));
+				timeLabel.setForeground(theme.getPrimaryTextColor());
+				JLabel eventLabel = new JLabel(e.getName());
+				eventLabel.setForeground(e.getCategory().getColor());
+				eventPanel.add(timeLabel);
+				eventPanel.add(eventLabel);
+				cell.add(eventPanel);
+			}
 			calendarPanel.add(cell);
 		}
 		add(calendarPanel, BorderLayout.CENTER);
 	}
 	
+	/**
+     * Initializes and lays out the bottom navigation panel, including
+     * month‐prev/next buttons and the current month label.
+     */
 	private void initBottom() {
 		bottomPanel = new JPanel(new FlowLayout());
 		bottomPanel.setBackground(theme.getBackgroundColor());
 		
 		JButton leftButton = new JButton("◄");
 		leftButton.setBackground(theme.getAccentColor());
-		leftButton.setForeground(theme.getTextColor());
+		leftButton.setForeground(theme.getPrimaryTextColor());
 		leftButton.addActionListener(e -> {
-			updateWith(sampleDate.minusMonths(1));
+			updateWith(referenceDate.minusMonths(1));
 		});
 		JButton rightButton = new JButton("►");
 		rightButton.setBackground(theme.getAccentColor());
-		rightButton.setForeground(theme.getTextColor());
+		rightButton.setForeground(theme.getPrimaryTextColor());
 		rightButton.addActionListener(e -> {
-			updateWith(sampleDate.plusMonths(1));
+			updateWith(referenceDate.plusMonths(1));
 		});
-		JLabel monthLabel = new JLabel(sampleDate.getMonth().toString() + " " + sampleDate.getYear());
-		monthLabel.setForeground(theme.getTextColor());
+		JLabel monthLabel = new JLabel(referenceDate.getMonth().toString() + " " + referenceDate.getYear());
+		monthLabel.setForeground(theme.getPrimaryTextColor());
 		
 		bottomPanel.add(leftButton);
 		bottomPanel.add(monthLabel);
@@ -124,8 +202,14 @@ public class CalendarComponent extends JComponent {
 		return theme;
 	}
 
+	/**
+     * Applies a new theme to this component and refreshes its contents
+     * to reflect updated styling.
+     *
+     * @param theme the new Theme to set
+     */
 	public void setTheme(Theme theme) {
 		this.theme = theme;
-		updateWith(sampleDate);
+		updateWith(referenceDate);
 	}
 }

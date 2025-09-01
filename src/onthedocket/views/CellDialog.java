@@ -63,15 +63,22 @@ public class CellDialog extends JDialog {
 		    AddEventDialog addDialog = new AddEventDialog(owner, selectedDate);
 		    addDialog.setVisible(true);
 		    if (addDialog.wasAdded()) {
-		        ((CalendarComponent)SwingUtilities.getAncestorOfClass(
-		            CalendarComponent.class, owner.getContentPane()
-		        )).updateWith(LocalDate.parse(getTitle()));
+		    	((MainView) owner).getCalendarComponent().updateWith(selectedDate);
 		    }
 		    dispose();
 		});
 		content.add(addButton, gbc);
 		gbc.gridy = 2;
 		JButton removeButton = new JButton("REMOVE EVENT");
+		removeButton.addActionListener(e -> {
+			JFrame owner = (JFrame) SwingUtilities.getWindowAncestor(this);
+			RemoveEventDialog removeDialog = new RemoveEventDialog(owner, selectedDate);
+			removeDialog.setVisible(true);
+			if(removeDialog.wasRemoved()) {
+				((MainView) owner).getCalendarComponent().updateWith(selectedDate);
+			}
+			dispose();
+		});
 		content.add(removeButton, gbc);
 		gbc.gridy = 3;
 		JButton cancelButton = new JButton("CANCEL");

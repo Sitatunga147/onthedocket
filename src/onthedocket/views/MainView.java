@@ -117,6 +117,10 @@ public class MainView extends JFrame {
 		calendar = new CalendarComponent(LocalDate.now(), theme);
 		add(calendar, BorderLayout.CENTER);
 	}
+	
+	public CalendarComponent getCalendarComponent() {
+		return calendar;
+	}
 
 	public Theme getTheme() {
 		return theme;

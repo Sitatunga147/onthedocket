@@ -1,6 +1,7 @@
 package onthedocket.models;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Represents a classification of calendar events, providing a name
@@ -13,7 +14,8 @@ import java.awt.Color;
  * 
  * @author Sitatunga147 (with moderate AI assistance)
  */
-public class EventCategory {
+@SuppressWarnings("serial")
+public class EventCategory implements Serializable {
 	/**
 	 * A catch-all category for events without a specific type, rendered in gray.
 	 */

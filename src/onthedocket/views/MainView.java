@@ -11,6 +11,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
+import onthedocket.persistence.DataManager;
+import onthedocket.persistence.Serializer;
 import onthedocket.utils.Theme;
 
 /**
@@ -62,6 +64,13 @@ public class MainView extends JFrame {
 		
 		menubar = new JMenuBar();
 		
+		JMenu fileMenu = new JMenu("File");
+		JMenuItem saveItem = new JMenuItem("Save");
+		saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+		saveItem.addActionListener(e -> Serializer.serialize());
+		fileMenu.add(saveItem);
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		
 		JMenu addMenu = new JMenu("Add");
 		JMenuItem addEventItem = new JMenuItem("Add Event");
 		addMenu.add(addEventItem);
@@ -91,6 +100,7 @@ public class MainView extends JFrame {
 		helpMenu.add(todayItem);
 		helpMenu.add(aboutItem);
 		
+		menubar.add(fileMenu);
 		menubar.add(addMenu);
 		menubar.add(themeMenu);
 		menubar.add(helpMenu);
@@ -112,6 +122,7 @@ public class MainView extends JFrame {
      * @param theme the new {@link Theme} to set
      */
 	public void setTheme(Theme theme) {
+		DataManager.setTheme(theme);
 		this.theme = theme;
 		getContentPane().removeAll();
 		initComponents();

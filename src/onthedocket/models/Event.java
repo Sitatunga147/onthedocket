@@ -1,5 +1,6 @@
 package onthedocket.models;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +14,8 @@ import java.util.Objects;
  * 
  * @author Sitatunga147 (with moderate AI assistance)
  */
-public class Event {
+@SuppressWarnings("serial")
+public class Event implements Serializable {
 	private String name;
 	private LocalDateTime start;
 	private LocalDateTime end;

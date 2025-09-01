@@ -1,6 +1,7 @@
 package onthedocket.utils;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  * Encapsulates a named collection of colors for styling the calendar UI.
@@ -10,7 +11,8 @@ import java.awt.Color;
  * 
  * @author Sitatunga147 (with moderate AI assistance)
  */
-public class Theme {
+@SuppressWarnings("serial")
+public class Theme implements Serializable {
 	public static final Theme LIGHT = new Theme("Light", Color.WHITE, Color.GRAY, Color.CYAN, Color.BLACK, Color.BLUE);
 	public static final Theme DARK = new Theme("Dark", Color.BLACK, Color.GRAY, Color.BLUE, Color.WHITE, Color.LIGHT_GRAY);
 	public static final Theme SUNRISE = new Theme("Sunrise", new Color(0xFF8153), new Color(0xFCC5AF), new Color(0xFFE63B), new Color(0x000100), new Color(0x684A2E));

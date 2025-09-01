@@ -73,6 +73,13 @@ public class MainView extends JFrame {
 		
 		JMenu addMenu = new JMenu("Add");
 		JMenuItem addEventItem = new JMenuItem("Add Event");
+		addEventItem.addActionListener(e -> {
+			AddEventDialog dialog = new AddEventDialog(this);
+			dialog.setVisible(true);
+			if(dialog.wasAdded()) {
+				calendar.updateWith(LocalDate.now());
+			}
+		});
 		addMenu.add(addEventItem);
 		addMenu.setMnemonic(KeyEvent.VK_A);
 		

@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,8 +15,10 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import onthedocket.models.Event;
 import onthedocket.persistence.DataManager;
@@ -164,6 +168,17 @@ public class CalendarComponent extends JComponent {
 				eventPanel.add(eventLabel);
 				cell.add(eventPanel);
 			}
+			
+			final LocalDate cellDate = date;
+			cell.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent me) {
+					JFrame owner = (JFrame) SwingUtilities.getWindowAncestor(CalendarComponent.this);
+					CellDialog dialog = new CellDialog(owner, cellDate);
+					dialog.setVisible(true);
+				}
+			});
+			
 			calendarPanel.add(cell);
 		}
 		add(calendarPanel, BorderLayout.CENTER);

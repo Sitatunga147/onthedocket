@@ -12,7 +12,11 @@ public class Launcher {
 		File serFile = new File("onthedocket.ser");
 		new Serializer(serFile);
 		Serializer.deserialize();
-		new MainView(DataManager.getTheme());
+		if(DataManager.getTheme() == null) {
+			new MainView();
+		} else {
+			new MainView(DataManager.getTheme());
+		}
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			Serializer.serialize();

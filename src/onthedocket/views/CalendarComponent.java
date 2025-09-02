@@ -8,6 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -26,8 +28,9 @@ import onthedocket.utils.Theme;
 
 /**
  * Renders a monthly calendar view that displays day cells, headers, and navigation controls.
- * Fetches events from DataManager and displays them on their respective dates,
- * using time labels and color‐coded categories. Supports theme changes and month navigation.
+ * Fetches events from DataManager and displays them on their respective dates, or on each
+ * date they span for multi-day events, using time labels and color-coded categories.
+ * Supports theme changes and month navigation.
  *
  * @see onthedocket.persistence.DataManager
  * @see onthedocket.models.Event
@@ -39,9 +42,7 @@ import onthedocket.utils.Theme;
 public class CalendarComponent extends JComponent {
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
 	private LocalDate referenceDate;
-	private JPanel headerPanel;
-	private JPanel calendarPanel;
-	private JPanel bottomPanel;
+	private JPanel headerPanel, calendarPanel, bottomPanel;
 	private Theme theme;
 	private ArrayList<Event> events;
 	
@@ -69,7 +70,6 @@ public class CalendarComponent extends JComponent {
      */
 	public CalendarComponent(LocalDate date, Theme theme) {
 		this.referenceDate = date;
-		
 		
 		setLayout(new BorderLayout());
 		setTheme(theme);
@@ -132,7 +132,9 @@ public class CalendarComponent extends JComponent {
 	
 	/**
      * Initializes and lays out the main calendar grid for the current reference month,
-     * including placeholder cells and daily event entries.
+     * including placeholder cells, daily event entries, and multi-day events.
+     * Multi-day events appear on each day they span with adjusted time labels
+     * and panels rendered with an alternate color.
      */
 	private void initCalendar() {
 		calendarPanel = new JPanel(new GridLayout(0, 7));
@@ -148,7 +150,9 @@ public class CalendarComponent extends JComponent {
 			LocalDate date = referenceDate.withDayOfMonth(i);
 			ArrayList<Event> todayEvents = new ArrayList<Event>();
 			for(Event e : events) {
-				if(e.getStart().toLocalDate().equals(date) && e.getEnd().toLocalDate().equals(date)) {
+				LocalDate start = e.getStart().toLocalDate();
+				LocalDate end = e.getEnd().toLocalDate();
+				if(!date.isBefore(start) && !date.isAfter(end)) {
 					todayEvents.add(e);
 				}
 			}
@@ -159,8 +163,14 @@ public class CalendarComponent extends JComponent {
 			
 			for(Event e : todayEvents) {
 				JPanel eventPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				eventPanel.setBackground(theme.getBackgroundColor());
-				JLabel timeLabel = new JLabel(e.getStart().format(TIME_FORMATTER) + " - " + e.getEnd().format(TIME_FORMATTER));
+				LocalDate start = e.getStart().toLocalDate();
+				LocalDate end = e.getEnd().toLocalDate();
+				boolean isMultiDay = start.isBefore(end);
+				eventPanel.setBackground(isMultiDay ? theme.getSecondaryColor() : theme.getBackgroundColor());
+				
+				LocalDateTime cellStart = date.isEqual(start) ? e.getStart() : LocalDateTime.of(date, LocalTime.MIN);
+				LocalDateTime cellEnd = date.isEqual(end) ? e.getEnd() : LocalDateTime.of(date, LocalTime.of(23, 59));
+				JLabel timeLabel = new JLabel(cellStart.format(TIME_FORMATTER) + " - " + cellEnd.format(TIME_FORMATTER));
 				timeLabel.setForeground(theme.getPrimaryTextColor());
 				JLabel eventLabel = new JLabel(e.getName());
 				eventLabel.setForeground(e.getCategory().getColor());

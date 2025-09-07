@@ -90,11 +90,8 @@ public class MainView extends JFrame {
 		JMenuItem darkItem = new JMenuItem("Dark");
 		darkItem.addActionListener(e -> setTheme(Theme.DARK));
 		darkItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.CTRL_DOWN_MASK));
-		JMenuItem sunriseItem = new JMenuItem("Sunrise");
-		sunriseItem.addActionListener(e -> setTheme(Theme.SUNRISE));
 		themeMenu.add(lightItem);
 		themeMenu.add(darkItem);
-		themeMenu.add(sunriseItem);
 		themeMenu.setMnemonic(KeyEvent.VK_T);
 		
 		JMenu helpMenu = new JMenu("Help");

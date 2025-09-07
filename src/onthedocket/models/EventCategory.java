@@ -14,8 +14,8 @@ import java.io.Serializable;
  * 
  * @author Sitatunga147 (with moderate AI assistance)
  */
-@SuppressWarnings("serial")
 public class EventCategory implements Serializable {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * A catch-all category for events without a specific type, rendered in gray.
 	 */

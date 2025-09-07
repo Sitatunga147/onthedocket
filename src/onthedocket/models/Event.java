@@ -14,8 +14,9 @@ import java.util.Objects;
  * 
  * @author Sitatunga147 (with moderate AI assistance)
  */
-@SuppressWarnings("serial")
 public class Event implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private String name;
 	private LocalDateTime start;
 	private LocalDateTime end;

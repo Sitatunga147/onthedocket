@@ -194,7 +194,6 @@ public class AddEventDialog extends JDialog {
 	    JSpinner spinner = new JSpinner(model);
 	    spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm"));
 	    return spinner;
-
 	}
 	
 	/**

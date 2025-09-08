@@ -80,7 +80,16 @@ public class MainView extends JFrame {
 				calendar.updateWith(LocalDate.now());
 			}
 		});
+		JMenuItem addCategoryItem = new JMenuItem("Add Category");
+		addCategoryItem.addActionListener(e -> {
+			AddCategoryDialog dialog = new AddCategoryDialog(this);
+			dialog.setVisible(true);
+			if(dialog.wasAdded()) {
+				
+			}
+		});
 		addMenu.add(addEventItem);
+		addMenu.add(addCategoryItem);
 		addMenu.setMnemonic(KeyEvent.VK_A);
 		
 		JMenu themeMenu = new JMenu("Theme");
